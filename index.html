@@ -63,7 +63,7 @@
   <form onsubmit="event.preventDefault(); generarCertificado();">
     Nombre del alumno: <input type="text" id="nombre" required><br>
     RUT del alumno: <input type="text" id="rut" required><br>
-    Día de inasistencia: <input type="text" id="dia" required><br>
+    
     <button type="submit">Generar Certificado</button>
   </form>
 
@@ -86,7 +86,7 @@
     function generarCertificado() {
       const nombre = document.getElementById('nombre').value;
       const rut = document.getElementById('rut').value;
-      
+      const dia = document.getElementById('dia').value;
 
       const texto = `
         Señor(a)<br><br>
