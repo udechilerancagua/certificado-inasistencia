@@ -11,11 +11,25 @@
     }
 
     #certificado {
-      width: 800px;
-      margin: 0 auto;
-      padding: 60px;
-      background: white;
-    }
+  width: 800px;
+  margin: 0 auto;
+  padding: 60px;
+  background: white;
+  position: relative;
+}
+
+#certificado::before {
+  content: "";
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  width: 100px;
+  height: 100px;
+  background: url('logo_udechile.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.08;
+  z-index: 0;
+}
 
     .titulo {
       text-align: center;
