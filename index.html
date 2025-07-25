@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Certificado de Inasistencia</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      padding: 40px;
+      background-color: #f5f5f5;
+    }
+    #certificado {
+      width: 800px;
+      margin: 0 auto;
+      padding: 60px;
+      background: white;
+      position: relative;
+    }
+    #certificado::before {
+      content: "";
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      width: 100px;
+      height: 100px;
+      background: url('logo_udechile.png') no-repeat center center;
+      background-size: contain;
+      opacity: 0.08;
+      z-index: 0;
+    }
+    .titulo {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 40px;
+      text-decoration: underline;
+      position: relative;
+      z-index: 1;
+    }
+    .contenido {
+      font-size: 18px;
+      line-height: 1.8;
+      text-align: justify;
+      position: relative;
+      z-index: 1;
+    }
+    .firma {
+      margin-top: 60px;
+      text-align: left;
+      position: relative;
+      z-index: 1;
+    }
+    .fecha {
+      margin-top: 40px;
+      text-align: right;
+      position: relative;
+      z-index: 1;
+    }
+    input, button {
+      font-size: 16px;
+      margin: 5px;
+      padding: 5px;
+    }
+    #descargarBtn {
+      margin-top: 20px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <h2>Generador de Certificado de Inasistencia</h2>
+
+  <form onsubmit="event.preventDefault(); generarCertificado();">
+    Nombre del alumno: <input type="text" id="nombre" required><br>
+    RUT del alumno: <input type="text" id="rut" required><br>
+    <button type="submit">Generar Certificado</button>
+  </form>
+
+  <div id="certificado" style="display: none;">
+    <div class="titulo">CERTIFICADO DE INASISTENCIA</div>
+    <div class="contenido" id="contenidoCertificado"></div>
+
+    <div class="firma">
+      <img src="firma_daniel.png" alt="Firma" style="width: 200px;"><br>
+      <p>Daniel Moreira Montesdeoca<br>
+      Director de Escuela</p>
+    </div>
+
+    <div class="fecha" id="fechaActual"></div>
+  </div>
+
+  <button id="descargarBtn" style="display: none;" onclick="descargarCertificado()">Descargar PDF</button>
+
+  <script>
+    function generarCertificado() {
+      const nombre = document.getElementById('nombre').value;
+      const rut = document.getElementById('rut').value;
+
+      const texto = `
+        Señor(a)<br><br>
+        Director(a)<br>
+        Presente. –<br><br>
+
+        DANIEL MOREIRA MONTESDEOCA, director general de la Escuela de Fútbol Oficial Universidad de Chile Rancagua, RUT 77.007.435-5, se dirige a usted a fin de dejar constancia de que <strong>${nombre}</strong>, cédula de identidad <strong>${rut}</strong>, que actualmente se encuentra matriculado en vuestro establecimiento educacional; tiene que ausentarse el día <strong>MIÉRCOLES</strong> 30 de julio del año en curso; por actividades programadas de nuestra escuela oficial fuera de la región.<br><br>
+
+        Esperando que sepan comprender las razones expuestas y otorguen la justificación en tiempo y forma correspondientes, se extiende el presente certificado para los fines que el interesado(a) estime convenientes.
+      `;
+
+      document.getElementById('contenidoCertificado').innerHTML = texto;
+
+      const hoy = new Date();
+      const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+      const fechaFormateada = hoy.toLocaleDateString('es-CL', opciones);
+      document.getElementById('fechaActual').innerText = `Rancagua, ${fechaFormateada}`;
+
+      document.getElementById('certificado').style.display = 'block';
+      document.getElementById('descargarBtn').style.display = 'inline-block';
+    }
+
+    function descargarCertificado() {
+      html2canvas(document.querySelector("#certificado")).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new window.jspdf.jsPDF("p", "pt", "a4");
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("certificado-inasistencia.pdf");
+      });
+    }
+  </script>
+
+</body>
+</html>
